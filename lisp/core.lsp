@@ -34,3 +34,47 @@
         ((and (> (mod tiempo-unix 216) 89) (< (mod tiempo-unix 216) 96)) 'amarillo)
         ((> (mod tiempo-unix 216) 95) 'verde))
     )
+
+;; ========================================================
+;; FUNCIÓN: auditoria
+;; NATURALEZA: Impura (Imprime texto en pantalla de acuerdo al valor agregado)
+;; ESTRATEGIA: Condicional (evaluación de múltiples casos mediante cond y llamadas a la función temporizador)
+;; IMPACTO: No destructiva 
+;; ========================================================
+;3
+(defun auditoria(tiempo-unix)
+    (cond
+        ((equal (temporizador tiempo-unix) 'rojo) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'verde 'rojo ))
+        ((equal (temporizador tiempo-unix) 'amarillo) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'rojo 'amarillo ))
+        ((equal (temporizador tiempo-unix) 'verde) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'amarillo 'verde ))
+    )
+)
+
+;; ========================================================
+;; FUNCIÓN: duracion-ciclo
+;; NATURALEZA: Pura (Dado un mismo tiempo-ciclo retorna un valor booleano)
+;; ESTRATEGIA: Lógica condicional (Implementada mediante cond)
+;; IMPACTO: No destructiva (devuelve un booleano)
+;; ========================================================
+;4.a
+(defun duracion-ciclo(tiempo-ciclo)
+    (cond
+        ((and(>= tiempo-ciclo 35) (<= tiempo-ciclo 150)) T)
+        (t nil)
+    )
+)
+
+;; ========================================================
+;; FUNCIÓN: ciclo-recomendado
+;; NATURALEZA: Impura (imprime texto en pantalla de acuerdo al parametro ingresado)
+;; ESTRATEGIA: Condicional (Evaluación de múltiples casos mediante cond)
+;; IMPACTO: No destructiva 
+;; ========================================================
+;4.b
+(defun ciclo-recomendado(tiempo)
+   (cond
+      ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
+      ((> tiempo 150) "Tiempo de espera muy largo, se recomienda reducirlo")
+      (t "Tiempo de espera óptimo")
+   )
+)
