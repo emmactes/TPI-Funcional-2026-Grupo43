@@ -78,13 +78,15 @@
       (t "Tiempo de espera óptimo")
    )
 )
-;5 (defun ciclos-por-tiempo (minutos)
+;5 
+(defun ciclos-por-tiempo (minutos)
 	(let ((ciclos-completos (truncate (/ (* minutos 60) 216))))
 		(format nil "Numero de ciclos completados ~a" ciclos-completos)
 	)
 )
 
-;6 (defun informe-dis-tem (tiempo-total)
+;6 
+(defun informe-dis-tem (tiempo-total)
   (let ((calculo-rojo (truncate (* tiempo-total (/ 90 216))))
         (calculo-amarillo (truncate (* tiempo-total (/ 6 216))))
         (calculo-verde (truncate (* tiempo-total (/ 120 216)))))
