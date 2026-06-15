@@ -85,11 +85,28 @@
 	)
 )
 
-;6 
+;; ========================================================
+;; FUNCION: informe-dis-tem
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Calculo mediante funciones aritmeticas
+;; IMPACTO: No destructiva
+;;
+;; Recibe un tiempo total de funcionamiento y calcula
+;; cuantos segundos correspondieron a cada color del
+;; semaforo segun las proporciones del ciclo:
+;; ROJO -> VERDE -> AMARILLO
+;; ========================================================
+
 (defun informe-dis-tem (tiempo-total)
+
   (let ((calculo-rojo (truncate (* tiempo-total (/ 90 216))))
-        (calculo-amarillo (truncate (* tiempo-total (/ 6 216))))
-        (calculo-verde (truncate (* tiempo-total (/ 120 216)))))
-    (format nil "rojo: ~a segundos  amarillo: ~a segundos  verde: ~a segundos" calculo-rojo calculo-amarillo calculo-verde)
+        (calculo-verde (truncate (* tiempo-total (/ 120 216))))
+        (calculo-amarillo (truncate (* tiempo-total (/ 6 216)))))
+
+    (format nil
+            "rojo: ~a segundos  verde: ~a segundos  amarillo: ~a segundos"
+            calculo-rojo
+            calculo-verde
+            calculo-amarillo)
   )
 )
