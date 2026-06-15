@@ -1,4 +1,7 @@
-;; Fase 1
+;; Iteracion 2. 
+;; Extension 1
+;; Carga de librerías externas mediante Quicklisp
+(ql:quickload "local-time")
 ;; ========================================================
 ;; FUNCION: transicion
 ;; NATURALEZA: Pura (Dados el mismo estado y color, siempre retorna la misma lista)
@@ -23,20 +26,12 @@
     (T (list color-actual 'accion-por-defecto))
   )
 )
+
 ;; ========================================================
 ;; FUNCION: temporizador
 ;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo átomo)
 ;; ESTRATEGIA: Matemática y Selección Condicional (Uso de let, mod y cond)
 ;; IMPACTO: No destructiva
-;;
-;; NUESTRO ERROR:
-;; Inicialmente asumimos que la secuencia de estados era
-;; ROJO -> AMARILLO -> VERDE.
-;; Luego descubrimos que el ciclo correcto era:
-;; ROJO -> VERDE -> AMARILLO -> ROJO.
-;; Tambien utilizábamos <= y < repitiendo la función 'mod' 
-;; para delimitar los rangos, generando código ineficiente. 
-;; ========================================================
 ;; Requerimiento 2: Temporizador Automatico
 (defun temporizador (epoch)
   (cond
@@ -45,27 +40,28 @@
     (T 'en-amarillo)
   )
 )
+
 ;; ========================================================
 ;; FUNCION: auditoria
-;; NATURALEZA: Impura (Genera efectos secundarios al imprimir en consola)
-;; ESTRATEGIA: Salida por Pantalla y Selección Condicional
+;; NATURALEZA: Impura (Genera un efecto secundario: I/O en terminal)
+;; ESTRATEGIA: Salida por pantalla y formateo de tiempo (Uso de let)
 ;; IMPACTO: No destructiva
-;;
-;; NUESTRO ERROR:
-;; Habia un problema con el ciclo del semaforo, lo que generaba mensajes incorrectos.
-;; Por ejemplo, cuando el semaforo cambiaba a rojo, el mensaje indicaba que habia cambiado 
-;; de verde a rojo, cuando en realidad el cambio era de amarillo a rojo.
 ;; ========================================================
-;; Requerimiento 3: Sistema de Auditoria
+;; Requerimiento 3 - Integración Fase 2 (Quicklisp)
 (defun auditoria (tiempo-unix)
-  (let ((estado-actual (temporizador tiempo-unix)))
+  (let ((estado-actual (temporizador tiempo-unix))
+        ;; Convertimos el tiempo unix y lo formateamos directamente como pide el TP
+        (fecha-formateada (local-time:format-timestring nil 
+                            (local-time:unix-to-timestamp tiempo-unix)
+                            :format '("[" :year "-" (:month 2) "-" (:day 2) " " 
+                                      (:hour 2) ":" (:min 2) ":" (:sec 2) "]"))))
     (cond
-      ((eq estado-actual 'rojo) 
-       (format t "Tiempo ~a: la luz ha cambiado de amarillo a rojo~%" tiempo-unix))
-      ((eq estado-actual 'verde) 
-       (format t "Tiempo ~a: la luz ha cambiado de rojo a verde~%" tiempo-unix))
-      ((eq estado-actual 'amarillo) 
-       (format t "Tiempo ~a: la luz ha cambiado de verde a amarillo~%" tiempo-unix))
+      ((eq estado-actual 'en-rojo) 
+       (format t "Tiempo ~a: la luz ha cambiado de amarillo a rojo~%" fecha-formateada))
+      ((eq estado-actual 'en-verde) 
+       (format t "Tiempo ~a: la luz ha cambiado de rojo a verde~%" fecha-formateada))
+      ((eq estado-actual 'en-amarillo) 
+       (format t "Tiempo ~a: la luz ha cambiado de verde a amarillo~%" fecha-formateada))
     )
   )
 )
@@ -127,81 +123,25 @@
   )
 )
 
-;; ========================================================
-;; REQUERIMIENTO 7: ASEGURAMIENTO DE LA CALIDAD 
-;; Guía de ejecución de pruebas para validación manual.
-;; Las líneas con ">" representan el ingreso del operador.
-;; ========================================================
-
-;; --- Pruebas Requerimiento 1: transicion ---
-;; Normal (Camino esperado):
-; > (transicion 'en-rojo 'verde)
-; (EN-ROJO "cambiar-a-verde")
-;
-;; Alternativo (Combinación no contemplada en el ciclo normal):
-; > (transicion 'en-rojo 'amarillo)
-; (EN-ROJO ACCION-POR-DEFECTO)
-;
-
-;; --- Pruebas Requerimiento 2: temporizador ---
-;; Normal (Evaluación de los 3 colores del ciclo):
-; > (temporizador 45)
-; ROJO
-; > (temporizador 90)
-; AMARILLO
-; > (temporizador 212)
-; VERDE
-;
-;; Alternativo (Tiempos mayores al primer ciclo de 216s):
-; > (temporizador 300) 
-; ROJO ; (300 mod 216 = 84, cae en rango rojo)
-;
-
-;; --- Pruebas Requerimiento 3: auditoria ---
-;; Normal (Impresión por pantalla según el tiempo ingresado):
-; > (auditoria 212)
-; Tiempo 212: la luz ha cambiado de rojo a verde
-; NIL
-;
-;; Alternativo (Impresión superando el primer ciclo):
-; > (auditoria 230)
-; Tiempo 230: la luz ha cambiado de amarillo a rojo
-; NIL
-
-;; --- Pruebas Requerimiento 4.a: duracion-ciclo ---
-;; Normal (Tiempo dentro del rango óptimo):
-; > (duracion-ciclo 100)
-; T
-;
-;; Alternativo (Tiempo fuera del rango óptimo):
-; > (duracion-ciclo 20)
-; NIL
-;
-
-;; --- Pruebas Requerimiento 4.b: ciclo-recomendado ---
-;; Normal (Tiempo óptimo):
-; > (ciclo-recomendado 100)
-; "Tiempo de espera óptimo"
-;
-;; Alternativos (Tiempos cortos y largos):
-; > (ciclo-recomendado 20)
-; "Tiempo de espera muy corto, se recomienda extenderlo"
-; > (ciclo-recomendado 200)
-; "Tiempo de espera muy largo, se recomienda reducirlo"
-;
-
-;; --- Pruebas Requerimiento 5: ciclos-por-tiempo ---
-;; Normal (Evaluación de múltiples ciclos):
-; > (ciclos-por-tiempo 10)
-; "Numero de ciclos completados 2"
-;
-;; Alternativo (Tiempo insuficiente para completar 1 ciclo):
-; > (ciclos-por-tiempo 3)
-; "Numero de ciclos completados 0"
-;
-
-;; --- Pruebas Requerimiento 6: informe-dist-temp ---
-;; Normal (Retorno de porcentajes fijos en formato texto):
-; > (informe-dist-temp)
-; "rojo: 41%  amarillo: 2%  verde: 55%"
-;
+;; Extension 2
+(defun informe (datos)
+  (with-open-file (stream "informe-ejecucion-semaforo.txt" 
+                          :direction :output 
+                          :if-exists :supersede       ;si ya existia lo reemplaza
+                          :if-does-not-exist :create) ;si no existe crea uno nuevo
+    (format stream "Informe de Ejecución del Sistema Semafórico~%")
+    (format stream "=========================================~%")
+    (mapcar #'(lambda (tiempo-unix)
+               (let ((fecha-humana (local-time:format-timestring nil (local-time:unix-to-timestamp tiempo-unix)
+                           :format '(:year "-" :month "-" :day " " :hour ":" :min ":" :sec)))
+                      (color-actual (temporizador tiempo-unix))
+                      (color-anterior (cond 
+                        ((equal (temporizador tiempo-unix) 'rojo) 'verde)
+                        ((equal (temporizador tiempo-unix) 'amarillo) 'rojo)
+                        ((equal (temporizador tiempo-unix) 'verde) 'amarillo))))
+               (format stream "~a - Transición: ~a -> ~a~%" 
+                          fecha-humana 
+                          color-anterior 
+                          color-actual)))
+              datos)
+    (format stream "~% --- Fin del Informe ---")))
