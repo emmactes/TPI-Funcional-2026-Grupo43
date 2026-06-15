@@ -1,0 +1,17 @@
+Introducción a Haskell y su impacto
+
+Para este análisis decidí enfocarme en Haskell, un lenguaje de programación funcional puro que nació a finales de los 80 pero que sigue siendo un referente clave cuando buscamos robustez. Lo que me parece más interesante de su filosofía es cómo combina tres pilares: el tipado estático fuerte, la evaluación perezosa (lazy evaluation) y la inmutabilidad de los datos.
+
+A diferencia de lo que ocurre con lenguajes como Common Lisp, donde el tipado es más flexible, Haskell nos obliga a declarar y respetar los tipos de datos desde el primer momento. Esto, en el día a día del desarrollo, es una ventaja enorme: nos permite detectar y corregir una gran cantidad de errores directamente durante la fase de compilación, mucho antes de que el código llegue a ejecutarse.
+
+•       Aplicaciones en el mundo real : Aunque a veces se percibe como un lenguaje exclusivamente académico, he podido verificar que su uso está muy consolidado en sectores donde la confiabilidad y la corrección matemática son críticas. No es un lenguaje de nicho sin aplicaciones prácticas; de hecho, grandes organizaciones lo implementan en entornos de producción exigentes:
+
+•	Sistemas Financieros: Empresas como Standard Chartered, Mercury y Tsuru Capital lo utilizan para suavizar riesgos en operaciones complejas.
+
+•	Infraestructura Tecnológica: Meta lo aprovecha para el desarrollo de herramientas internas y análisis de datos a gran escala.
+
+•	Blockchain: IOHK / Input Output Global lo eligió como el núcleo para desarrollar la red Cardano, precisamente por la seguridad que ofrece.
+
+•	Conclusión y valoración
+Desde mi punto de vista, las principales ventajas que aporta Haskell se resumen en tres puntos: una seguridad de tipos envidiable, la facilidad para razonar matemáticamente sobre el comportamiento del software y, en consecuencia, una reducción de los errores en tiempo de ejecución. Es una herramienta diseñada para cuando el margen de error debe ser igual a cero.
+ 
