@@ -1,7 +1,7 @@
 ;; ========================================================
 ;; FUNCION: transicion
 ;; NATURALEZA: Pura (Dados el mismo estado y color, siempre retorna la misma lista)
-;; ESTRATEGIA: Seleccion Condicional Multiple (Implementada mediante cond y equal)
+;; ESTRATEGIA: Seleccion Condicional Multiple (Implementada mediante cond y eq)
 ;; IMPACTO: No destructiva (Construye una nueva lista como salida)
 ;; ========================================================
 ;; Requerimiento 1: Estados de Transición
