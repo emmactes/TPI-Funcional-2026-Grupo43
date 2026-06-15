@@ -4,50 +4,72 @@
 ;; ESTRATEGIA: Seleccion Condicional Multiple (Implementada mediante cond y equal)
 ;; IMPACTO: No destructiva (Construye una nueva lista como salida)
 ;; ========================================================
-; Requerimiento 1: Estados de Transición
+;; Requerimiento 1: Estados de Transición
 (defun transicion (color-actual color-siguiente)
-  (cond 
-     ((and (eq color-actual 'en-rojo) (eq color-siguiente 'verde))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-        ((and (eq color-actual 'en-rojo) (eq color-siguiente 'amarillo))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-        ((and (eq color-actual 'en-amarillo) (eq color-siguiente 'rojo))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-        ((and (eq color-actual 'en-amarillo) (eq color-siguiente 'verde))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-        ((and (eq color-actual 'en-verde) (eq color-siguiente 'rojo))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-        ((and (eq color-actual 'en-verde) (eq color-siguiente 'amarillo))
-        (list color-actual (format nil "cambiar-a-~a" color-siguiente)))
-     (t (list color-actual 'accion-por-defecto))))
+  (cond
+    ((and (eq color-actual 'en-rojo)
+          (eq color-siguiente 'verde))
+      (list color-actual "cambiar-a-verde"))
 
+    ((and (eq color-actual 'en-verde)
+          (eq color-siguiente 'amarillo))
+      (list color-actual "cambiar-a-amarillo"))
+
+    ((and (eq color-actual 'en-amarillo)
+          (eq color-siguiente 'rojo))
+      (list color-actual "cambiar-a-rojo"))
+
+    (T (list color-actual 'accion-por-defecto))
+  )
+)
 ;; ========================================================
-;; FUNCIÓN: temporizador
-;; NATURALEZA: Pura (Dado un timestamp, siempre retorna el mismo color)
-;; ESTRATEGIA: Selección Condicional (Implementada mediante cond y operadores matemáticos)
+;; FUNCION: temporizador
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Condicional
 ;; IMPACTO: No destructiva
+;;
+;; NUESTRO ERROR:
+;; Inicialmente asumimos que la secuencia de estados era
+;; ROJO -> AMARILLO -> VERDE.
+;; Luego descubri que el ciclo correcto era:
+;; ROJO -> VERDE -> AMARILLO -> ROJO.
+;;
+;; Tambien utilizamos <= y < para delimitar los rangos
+;; temporales, generando errores en los cambios
+;; exactos de estado.
 ;; ========================================================
-; Requerimiento 2: Temporizador Automatico
-(defun temporizador (tiempo-unix)
+;; Requerimiento 2
+(defun temporizador(tiempo_actual)
     (cond
-    ((<(mod tiempo-unix 216) 90) 'rojo)
-        ((and (> (mod tiempo-unix 216) 89) (< (mod tiempo-unix 216) 96)) 'amarillo)
-        ((> (mod tiempo-unix 216) 95) 'verde))
-    )
+		((and (>= (mod tiempo_actual 216) 0) (< (mod tiempo_actual 216) 90)) 'rojo)
+		((and (>= (mod tiempo_actual 216) 90) (< (mod tiempo_actual 216) 96)) 'amarillo)
+		((and (>= (mod tiempo_actual 216) 96) (< (mod tiempo_actual 216) 216)) 'verde)
+	)
+)
 
 ;; ========================================================
-;; FUNCIÓN: auditoria
-;; NATURALEZA: Impura (Imprime texto en pantalla de acuerdo al valor agregado)
-;; ESTRATEGIA: Condicional (evaluación de múltiples casos mediante cond y llamadas a la función temporizador)
-;; IMPACTO: No destructiva 
+;; FUNCION: auditoria
+;; NATURALEZA: Impura
+;; ESTRATEGIA: Salida por pantalla
+;; IMPACTO: No destructiva
+;;
+;; NUESTRO ERROR:
+;; Habia un problema con el ciclo del semaforo, lo que generaba mensajes incorrectos.
+;; Por ejemplo, cuando el semaforo cambiaba a rojo, el mensaje indicaba que habia cambiado 
+;; de verde a rojo, cuando en realidad el cambio era de amarillo a rojo.
 ;; ========================================================
-;3
-(defun auditoria(tiempo-unix)
+;; Requerimiento 3
+(defun auditoria (tiempo-unix)
+  (let ((estado-actual (temporizador tiempo-unix)))
     (cond
-        ((equal (temporizador tiempo-unix) 'rojo) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'verde 'rojo ))
-        ((equal (temporizador tiempo-unix) 'amarillo) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'rojo 'amarillo ))
-        ((equal (temporizador tiempo-unix) 'verde) (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a" tiempo-unix 'amarillo 'verde ))
+      ((eq estado-actual 'rojo) 
+       (format t "Tiempo ~a: la luz ha cambiado de amarillo a rojo~%" tiempo-unix))
+      ((eq estado-actual 'verde) 
+       (format t "Tiempo ~a: la luz ha cambiado de rojo a verde~%" tiempo-unix))
+      ((eq estado-actual 'amarillo) 
+       (format t "Tiempo ~a: la luz ha cambiado de verde a amarillo~%" tiempo-unix))
     )
+  )
 )
 
 ;; ========================================================
@@ -56,40 +78,54 @@
 ;; ESTRATEGIA: Lógica condicional (Implementada mediante cond)
 ;; IMPACTO: No destructiva (devuelve un booleano)
 ;; ========================================================
-;4.a
-(defun duracion-ciclo(tiempo-ciclo)
+;; Requerimiento 4.a
+(defun duracion-ciclo (tiempo-ciclo)
     (cond
-        ((and(>= tiempo-ciclo 35) (<= tiempo-ciclo 150)) T)
+        ((and (> tiempo-ciclo 35) (< tiempo-ciclo 150)) T)
         (t nil)
     )
 )
 
 ;; ========================================================
 ;; FUNCIÓN: ciclo-recomendado
-;; NATURALEZA: Impura (imprime texto en pantalla de acuerdo al parametro ingresado)
+;; NATURALEZA: Pura (Retorna una cadena de texto, no genera efectos secundarios)
 ;; ESTRATEGIA: Condicional (Evaluación de múltiples casos mediante cond)
 ;; IMPACTO: No destructiva 
 ;; ========================================================
-;4.b
-(defun ciclo-recomendado(tiempo)
+;; Requerimiento 4.b
+(defun ciclo-recomendado (tiempo)
    (cond
       ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
       ((> tiempo 150) "Tiempo de espera muy largo, se recomienda reducirlo")
       (t "Tiempo de espera óptimo")
    )
 )
-;5 
+
+;; ========================================================
+;; FUNCIÓN: ciclos-por-tiempo
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; IMPACTO: No destructiva
+;; ========================================================
+;; Requerimiento 5
 (defun ciclos-por-tiempo (minutos)
-	(let ((ciclos-completos (truncate (/ (* minutos 60) 216))))
-		(format nil "Numero de ciclos completados ~a" ciclos-completos)
-	)
+    (let ((ciclos-completos (truncate (/ (* minutos 60) 216))))
+        (format nil "Numero de ciclos completados ~a" ciclos-completos)
+    )
 )
 
-;6 
+;; ========================================================
+;; FUNCIÓN: informe-dis-tem
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; IMPACTO: No destructiva
+;; ========================================================
+;; Requerimiento 6
 (defun informe-dis-tem (tiempo-total)
-  (let ((calculo-rojo (truncate (* tiempo-total (/ 90 216))))
-        (calculo-amarillo (truncate (* tiempo-total (/ 6 216))))
-        (calculo-verde (truncate (* tiempo-total (/ 120 216)))))
-    (format nil "rojo: ~a segundos  amarillo: ~a segundos  verde: ~a segundos" calculo-rojo calculo-amarillo calculo-verde)
+  ;; El porcentaje es fijo según la duración de cada color en el ciclo de 216s
+  (let ((calculo-rojo (truncate (/ (* 90 100.0) 216)))
+        (calculo-amarillo (truncate (/ (* 6 100.0) 216)))
+        (calculo-verde (truncate (/ (* 120 100.0) 216))))
+    (format nil "rojo: ~a%  amarillo: ~a%  verde: ~a%" calculo-rojo calculo-amarillo calculo-verde)
   )
 )
