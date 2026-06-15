@@ -78,13 +78,29 @@
       (t "Tiempo de espera óptimo")
    )
 )
-;5 
+;; 5
+;; ========================================================
+;; FUNCION: ciclos-por-tiempo
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Composicion funcional
+;; IMPACTO: No destructiva
+;;
+;; Recibe una cantidad de minutos de funcionamiento
+;; y calcula cuantos ciclos completos del semaforo
+;; se realizaron.
+
 (defun ciclos-por-tiempo (minutos)
-	(let ((ciclos-completos (truncate (/ (* minutos 60) 216))))
-		(format nil "Numero de ciclos completados ~a" ciclos-completos)
-	)
+
+  (let ((ciclos-completos
+          (truncate (/ (* minutos 60) 216))))
+
+    (format nil
+            "Numero de ciclos completados ~a"
+            ciclos-completos)
+  )
 )
 
+;;6
 ;; ========================================================
 ;; FUNCION: informe-dis-tem
 ;; NATURALEZA: Pura
