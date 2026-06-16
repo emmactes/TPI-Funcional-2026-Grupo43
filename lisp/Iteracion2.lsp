@@ -4,25 +4,25 @@
 (ql:quickload "local-time")
 ;; ========================================================
 ;; FUNCION: transicion
-;; NATURALEZA: Pura (Dados el mismo estado y color, siempre retorna la misma lista)
-;; ESTRATEGIA: Seleccion Condicional Multiple (Implementada mediante cond y eq)
-;; IMPACTO: No destructiva (Construye una nueva lista como salida)
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Seleccion Condicional Multiple 
+;; IMPACTO: No destructiva 
 ;; ========================================================
-;; Requerimiento 1: Estados de Transición
+;; Requerimiento 1: Estados de Transicion
 (defun transicion (color-actual color-siguiente)
   (cond
-    ((and (eq color-actual 'en-rojo)
-          (eq color-siguiente 'verde))
+    ((and (eq color-actual 'en-rojo) (eq color-siguiente 'rojo-intermitente))
+      (list color-actual "cambiar-a-rojo-intermitente"))
+    ((and (eq color-actual 'rojo-intermitente) (eq color-siguiente 'en-verde))
       (list color-actual "cambiar-a-verde"))
-
-    ((and (eq color-actual 'en-verde)
-          (eq color-siguiente 'amarillo))
+    ((and (eq color-actual 'en-verde) (eq color-siguiente 'verde-intermitente))
+      (list color-actual "cambiar-a-verde-intermitente"))
+    ((and (eq color-actual 'verde-intermitente) (eq color-siguiente 'en-amarillo))
       (list color-actual "cambiar-a-amarillo"))
-
-    ((and (eq color-actual 'en-amarillo)
-          (eq color-siguiente 'rojo))
+    ((and (eq color-actual 'en-amarillo) (eq color-siguiente 'amarillo-intermitente))
+      (list color-actual "cambiar-a-amarillo-intermitente"))
+    ((and (eq color-actual 'amarillo-intermitente) (eq color-siguiente 'en-rojo))
       (list color-actual "cambiar-a-rojo"))
-
     (T (list color-actual 'accion-por-defecto))
   )
 )
@@ -30,14 +30,19 @@
 ;; ========================================================
 ;; FUNCION: temporizador
 ;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo átomo)
-;; ESTRATEGIA: Matemática y Selección Condicional (Uso de let, mod y cond)
+;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de let, mod y cond)
 ;; IMPACTO: No destructiva
 ;; Requerimiento 2: Temporizador Automatico
 (defun temporizador (epoch)
-  (cond
-    ((< (mod epoch 216) 90) 'en-rojo)
-    ((< (mod epoch 216) 210) 'en-verde)
-    (T 'en-amarillo)
+  (let ((segundo-ciclo (mod epoch 225))) ;; El ciclo es de 225s
+    (cond
+      ((< segundo-ciclo 90) 'en-rojo)
+      ((< segundo-ciclo 93) 'rojo-intermitente)
+      ((< segundo-ciclo 213) 'en-verde)      ;; 93 + 120
+      ((< segundo-ciclo 216) 'verde-intermitente) ;; 213 + 3
+      ((< segundo-ciclo 222) 'en-amarillo)   ;; 216 + 6
+      (T 'amarillo-intermitente)             ;;
+    )
   )
 )
 
@@ -47,29 +52,34 @@
 ;; ESTRATEGIA: Salida por pantalla y formateo de tiempo (Uso de let)
 ;; IMPACTO: No destructiva
 ;; ========================================================
-;; Requerimiento 3 - Integración Fase 2 (Quicklisp)
+;; Requerimiento 3: Sistema de Auditoria
 (defun auditoria (tiempo-unix)
   (let ((estado-actual (temporizador tiempo-unix))
-        ;; Convertimos el tiempo unix y lo formateamos directamente como pide el TP
         (fecha-formateada (local-time:format-timestring nil 
                             (local-time:unix-to-timestamp tiempo-unix)
                             :format '("[" :year "-" (:month 2) "-" (:day 2) " " 
                                       (:hour 2) ":" (:min 2) ":" (:sec 2) "]"))))
-    (cond
+(cond
       ((eq estado-actual 'en-rojo) 
-       (format t "Tiempo ~a: la luz ha cambiado de amarillo a rojo~%" fecha-formateada))
+       (format t "Tiempo ~a: cambio de AMARILLO-INTERMITENTE a ROJO~%" fecha-formateada))
+      ((eq estado-actual 'rojo-intermitente) 
+       (format t "Tiempo ~a: cambio de ROJO a ROJO-INTERMITENTE~%" fecha-formateada))
       ((eq estado-actual 'en-verde) 
-       (format t "Tiempo ~a: la luz ha cambiado de rojo a verde~%" fecha-formateada))
+       (format t "Tiempo ~a: cambio de ROJO-INTERMITENTE a VERDE~%" fecha-formateada))
+      ((eq estado-actual 'verde-intermitente) 
+       (format t "Tiempo ~a: cambio de VERDE a VERDE-INTERMITENTE~%" fecha-formateada))
       ((eq estado-actual 'en-amarillo) 
-       (format t "Tiempo ~a: la luz ha cambiado de verde a amarillo~%" fecha-formateada))
+       (format t "Tiempo ~a: cambio de VERDE-INTERMITENTE a AMARILLO~%" fecha-formateada))
+      ((eq estado-actual 'amarillo-intermitente) 
+       (format t "Tiempo ~a: cambio de AMARILLO a AMARILLO-INTERMITENTE~%" fecha-formateada))
     )
   )
 )
 
 ;; ========================================================
-;; FUNCIÓN: duracion-ciclo
+;; FUNCION: duracion-ciclo
 ;; NATURALEZA: Pura (Dado un mismo tiempo-ciclo retorna un valor booleano)
-;; ESTRATEGIA: Lógica condicional (Implementada mediante cond)
+;; ESTRATEGIA: Logica condicional (Implementada mediante cond)
 ;; IMPACTO: No destructiva (devuelve un booleano)
 ;; ========================================================
 ;; Requerimiento 4.a: Análisis de Ciclos Semafóricos
@@ -81,12 +91,12 @@
 )
 
 ;; ========================================================
-;; FUNCIÓN: recomendacion-ciclo
+;; FUNCION: recomendacion-ciclo
 ;; NATURALEZA: Pura (Retorna una cadena de texto, no genera efectos secundarios)
-;; ESTRATEGIA: Condicional (Evaluación de múltiples casos mediante cond)
+;; ESTRATEGIA: Condicional (Evaluación de multiples casos mediante cond)
 ;; IMPACTO: No destructiva 
 ;; ========================================================
-;; Requerimiento 4.b: Análisis de Ciclos Semafóricos
+;; Requerimiento 4.b: Analisis de Ciclos Semaforicos
 (defun recomendacion-ciclo (tiempo)
    (cond
       ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
@@ -96,52 +106,61 @@
 )
 
 ;; ========================================================
-;; FUNCIÓN: ciclos-por-tiempo
+;; FUNCION: ciclos-por-tiempo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; ESTRATEGIA: Matematica/Composicion (Uso de let y truncate)
 ;; IMPACTO: No destructiva
 ;; ========================================================
 ;; Requerimiento 5: Planificacion Temporal
 (defun ciclos-por-tiempo (minutos)
-    (let ((ciclos-completos (truncate (/ (* minutos 60) 216))))
+    ;; Actualizado al ciclo de 225 segundos
+    (let ((ciclos-completos (truncate (/ (* minutos 60) 225))))
         (format nil "Numero de ciclos completados ~a" ciclos-completos)
     )
 )
 
 ;; ========================================================
-;; FUNCIÓN: informe-dist-temp
+;; FUNCION: informe-dist-temp
 ;; NATURALEZA: Pura
-;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; ESTRATEGIA: Matematica/Composicion (Uso de let y truncate)
 ;; IMPACTO: No destructiva
 ;; ========================================================
 ;; Requerimiento 6: Informe de Distribución Temporal
 (defun informe-dist-temp ()
-  (let ((calculo-rojo (truncate (/ (* 90 100.0) 216)))
-        (calculo-amarillo (truncate (/ (* 6 100.0) 216)))
-        (calculo-verde (truncate (/ (* 120 100.0) 216))))
-    (format nil "rojo: ~a%  amarillo: ~a%  verde: ~a%" calculo-rojo calculo-amarillo calculo-verde)
+  ;; Se actualizan los porcentajes con el divisor 225 y los nuevos estados
+  (let ((calculo-rojo (truncate (/ (* 90 100.0) 225)))
+        (calculo-rojo-intermitente (truncate (/ (* 3 100.0) 225)))
+        (calculo-verde (truncate (/ (* 120 100.0) 225)))
+        (calculo-verde-intermitente (truncate (/ (* 3 100.0) 225)))
+        (calculo-amarillo (truncate (/ (* 6 100.0) 225)))
+        (calculo-amarillo-intermitente (truncate (/ (* 3 100.0) 225))))
+    (format nil "Rojo: ~a% (Int: ~a%) | Verde: ~a% (Int: ~a%) | Amarillo: ~a% (Int: ~a%)"
+            calculo-rojo calculo-rojo-intermitente calculo-verde calculo-verde-intermitente 
+            calculo-amarillo calculo-amarillo-intermitente)
   )
 )
 
 ;; Extension 2
 (defun informe (datos)
-  (with-open-file (stream "informe-ejecucion-semaforo.txt" 
-                          :direction :output 
-                          :if-exists :supersede       ;si ya existia lo reemplaza
-                          :if-does-not-exist :create) ;si no existe crea uno nuevo
+  (with-open-file (stream "informe-ejecucion-semaforo.txt"
+                          :direction :output
+                          :if-exists :supersede 
+                          :if-does-not-exist :create)
     (format stream "Informe de Ejecución del Sistema Semafórico~%")
     (format stream "=========================================~%")
     (mapcar #'(lambda (tiempo-unix)
-               (let ((fecha-humana (local-time:format-timestring nil (local-time:unix-to-timestamp tiempo-unix)
-                           :format '(:year "-" :month "-" :day " " :hour ":" :min ":" :sec)))
+               (let ((fecha-legible (local-time:format-timestring nil 
+                                    (local-time:unix-to-timestamp tiempo-unix)
+                            :format '(:year "-" :month "-" :day " " :hour ":" :min ":" :sec)))
                       (color-actual (temporizador tiempo-unix))
-                      (color-anterior (cond 
+                      (color-anterior
+                      (cond
                         ((equal (temporizador tiempo-unix) 'rojo) 'verde)
                         ((equal (temporizador tiempo-unix) 'amarillo) 'rojo)
                         ((equal (temporizador tiempo-unix) 'verde) 'amarillo))))
-               (format stream "~a - Transición: ~a -> ~a~%" 
-                          fecha-humana 
-                          color-anterior 
+               (format stream "~a - Transición: ~a -> ~a~%"
+                          fecha-legible
+                          color-anterior
                           color-actual)))
               datos)
     (format stream "~% --- Fin del Informe ---")))

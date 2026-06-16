@@ -25,8 +25,8 @@
 )
 ;; ========================================================
 ;; FUNCION: temporizador
-;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo átomo)
-;; ESTRATEGIA: Matemática y Selección Condicional (Uso de let, mod y cond)
+;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo atomo)
+;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de let, mod y cond)
 ;; IMPACTO: No destructiva
 ;;
 ;; NUESTRO ERROR:
@@ -34,7 +34,7 @@
 ;; ROJO -> AMARILLO -> VERDE.
 ;; Luego descubrimos que el ciclo correcto era:
 ;; ROJO -> VERDE -> AMARILLO -> ROJO.
-;; Tambien utilizábamos <= y < repitiendo la función 'mod' 
+;; Tambien utilizabamos <= y < repitiendo la funcion 'mod' 
 ;; para delimitar los rangos, generando código ineficiente. 
 ;; ========================================================
 ;; Requerimiento 2: Temporizador Automatico
@@ -48,7 +48,7 @@
 ;; ========================================================
 ;; FUNCION: auditoria
 ;; NATURALEZA: Impura (Genera efectos secundarios al imprimir en consola)
-;; ESTRATEGIA: Salida por Pantalla y Selección Condicional
+;; ESTRATEGIA: Salida por Pantalla y Seleccion Condicional
 ;; IMPACTO: No destructiva
 ;;
 ;; NUESTRO ERROR:
@@ -60,20 +60,20 @@
 (defun auditoria (tiempo-unix)
   (let ((estado-actual (temporizador tiempo-unix)))
     (cond
-      ((eq estado-actual 'rojo) 
+      ((eq estado-actual 'en-rojo) 
        (format t "Tiempo ~a: la luz ha cambiado de amarillo a rojo~%" tiempo-unix))
-      ((eq estado-actual 'verde) 
+      ((eq estado-actual 'en-verde) 
        (format t "Tiempo ~a: la luz ha cambiado de rojo a verde~%" tiempo-unix))
-      ((eq estado-actual 'amarillo) 
+      ((eq estado-actual 'en-amarillo) 
        (format t "Tiempo ~a: la luz ha cambiado de verde a amarillo~%" tiempo-unix))
     )
   )
 )
 
 ;; ========================================================
-;; FUNCIÓN: duracion-ciclo
+;; FUNCION: duracion-ciclo
 ;; NATURALEZA: Pura (Dado un mismo tiempo-ciclo retorna un valor booleano)
-;; ESTRATEGIA: Lógica condicional (Implementada mediante cond)
+;; ESTRATEGIA: Logica condicional (Implementada mediante cond)
 ;; IMPACTO: No destructiva (devuelve un booleano)
 ;; ========================================================
 ;; Requerimiento 4.a: Análisis de Ciclos Semafóricos
@@ -85,12 +85,12 @@
 )
 
 ;; ========================================================
-;; FUNCIÓN: recomendacion-ciclo
+;; FUNCION: recomendacion-ciclo
 ;; NATURALEZA: Pura (Retorna una cadena de texto, no genera efectos secundarios)
-;; ESTRATEGIA: Condicional (Evaluación de múltiples casos mediante cond)
+;; ESTRATEGIA: Condicional (Evaluacion de múltiples casos mediante cond)
 ;; IMPACTO: No destructiva 
 ;; ========================================================
-;; Requerimiento 4.b: Análisis de Ciclos Semafóricos
+;; Requerimiento 4.b: Analisis de Ciclos Semaforicos
 (defun recomendacion-ciclo (tiempo)
    (cond
       ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
@@ -100,9 +100,9 @@
 )
 
 ;; ========================================================
-;; FUNCIÓN: ciclos-por-tiempo
+;; FUNCION: ciclos-por-tiempo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; ESTRATEGIA: Matematica/Composicion (Uso de let y truncate)
 ;; IMPACTO: No destructiva
 ;; ========================================================
 ;; Requerimiento 5: Planificacion Temporal
@@ -113,9 +113,9 @@
 )
 
 ;; ========================================================
-;; FUNCIÓN: informe-dist-temp
+;; FUNCION: informe-dist-temp
 ;; NATURALEZA: Pura
-;; ESTRATEGIA: Matemática/Composición (Uso de let y truncate)
+;; ESTRATEGIA: Matematica/Composicion (Uso de let y truncate)
 ;; IMPACTO: No destructiva
 ;; ========================================================
 ;; Requerimiento 6: Informe de Distribución Temporal
@@ -129,8 +129,8 @@
 
 ;; ========================================================
 ;; REQUERIMIENTO 7: ASEGURAMIENTO DE LA CALIDAD 
-;; Guía de ejecución de pruebas para validación manual.
-;; Las líneas con ">" representan el ingreso del operador.
+;; Guia de ejecucion de pruebas para validacion manual.
+;; Las lineas con ">" representan el ingreso del operador.
 ;; ========================================================
 
 ;; --- Pruebas Requerimiento 1: transicion ---
@@ -138,13 +138,13 @@
 ; > (transicion 'en-rojo 'verde)
 ; (EN-ROJO "cambiar-a-verde")
 ;
-;; Alternativo (Combinación no contemplada en el ciclo normal):
+;; Alternativo (Accion por defecto):
 ; > (transicion 'en-rojo 'amarillo)
 ; (EN-ROJO ACCION-POR-DEFECTO)
 ;
 
 ;; --- Pruebas Requerimiento 2: temporizador ---
-;; Normal (Evaluación de los 3 colores del ciclo):
+;; Normal (Evaluacion de los 3 colores del ciclo):
 ; > (temporizador 45)
 ; ROJO
 ; > (temporizador 90)
@@ -158,30 +158,30 @@
 ;
 
 ;; --- Pruebas Requerimiento 3: auditoria ---
-;; Normal (Impresión por pantalla según el tiempo ingresado):
+;; Normal (Impresion por pantalla segun el tiempo ingresado):
 ; > (auditoria 212)
 ; Tiempo 212: la luz ha cambiado de rojo a verde
 ; NIL
 ;
-;; Alternativo (Impresión superando el primer ciclo):
+;; Alternativo (Impresion superando el primer ciclo):
 ; > (auditoria 230)
 ; Tiempo 230: la luz ha cambiado de amarillo a rojo
 ; NIL
 
 ;; --- Pruebas Requerimiento 4.a: duracion-ciclo ---
-;; Normal (Tiempo dentro del rango óptimo):
+;; Normal (Tiempo dentro del rango optimo):
 ; > (duracion-ciclo 100)
 ; T
 ;
-;; Alternativo (Tiempo fuera del rango óptimo):
+;; Alternativo (Tiempo fuera del rango optimo):
 ; > (duracion-ciclo 20)
 ; NIL
 ;
 
 ;; --- Pruebas Requerimiento 4.b: ciclo-recomendado ---
-;; Normal (Tiempo óptimo):
+;; Normal (Tiempo optimo):
 ; > (ciclo-recomendado 100)
-; "Tiempo de espera óptimo"
+; "Tiempo de espera optimo"
 ;
 ;; Alternativos (Tiempos cortos y largos):
 ; > (ciclo-recomendado 20)
@@ -191,7 +191,7 @@
 ;
 
 ;; --- Pruebas Requerimiento 5: ciclos-por-tiempo ---
-;; Normal (Evaluación de múltiples ciclos):
+;; Normal (Evaluacion de multiples ciclos):
 ; > (ciclos-por-tiempo 10)
 ; "Numero de ciclos completados 2"
 ;
@@ -204,4 +204,3 @@
 ;; Normal (Retorno de porcentajes fijos en formato texto):
 ; > (informe-dist-temp)
 ; "rojo: 41%  amarillo: 2%  verde: 55%"
-;
