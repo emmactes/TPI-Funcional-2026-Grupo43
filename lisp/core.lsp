@@ -5,7 +5,7 @@
 ;; ESTRATEGIA: Seleccion Condicional Multiple (Implementada mediante cond y eq)
 ;; IMPACTO: No destructiva (Construye una nueva lista como salida)
 ;; ========================================================
-;; Requerimiento 1: Estados de Transición
+;; Requerimiento 1: Estados de Transicion
 (defun transicion (color-actual color-siguiente)
   (cond
     ((and (eq color-actual 'en-rojo)
@@ -26,7 +26,7 @@
 ;; ========================================================
 ;; FUNCION: temporizador
 ;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo atomo)
-;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de let, mod y cond)
+;; ESTRATEGIA: Matematica y Seleccion Condicional (mod y cond)
 ;; IMPACTO: No destructiva
 ;;
 ;; NUESTRO ERROR:
@@ -34,7 +34,7 @@
 ;; ROJO -> AMARILLO -> VERDE.
 ;; Luego descubrimos que el ciclo correcto era:
 ;; ROJO -> VERDE -> AMARILLO -> ROJO.
-;; Tambien utilizabamos <= y < repitiendo la funcion 'mod' 
+;; Tambien utilizabamos < repitiendo la funcion 'mod' 
 ;; para delimitar los rangos, generando código ineficiente. 
 ;; ========================================================
 ;; Requerimiento 2: Temporizador Automatico
@@ -76,7 +76,7 @@
 ;; ESTRATEGIA: Logica condicional (Implementada mediante cond)
 ;; IMPACTO: No destructiva (devuelve un booleano)
 ;; ========================================================
-;; Requerimiento 4.a: Análisis de Ciclos Semafóricos
+;; Requerimiento 4.a: Analisis de Ciclos Semaforicos
 (defun duracion-ciclo (tiempo-ciclo)
     (cond
         ((and (> tiempo-ciclo 35) (< tiempo-ciclo 150)) T)
@@ -87,7 +87,7 @@
 ;; ========================================================
 ;; FUNCION: recomendacion-ciclo
 ;; NATURALEZA: Pura (Retorna una cadena de texto, no genera efectos secundarios)
-;; ESTRATEGIA: Condicional (Evaluacion de múltiples casos mediante cond)
+;; ESTRATEGIA: Condicional (Evaluacion de multiples casos mediante cond)
 ;; IMPACTO: No destructiva 
 ;; ========================================================
 ;; Requerimiento 4.b: Analisis de Ciclos Semaforicos
@@ -95,7 +95,7 @@
    (cond
       ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
       ((> tiempo 150) "Tiempo de espera muy largo, se recomienda reducirlo")
-      (t "Tiempo de espera óptimo")
+      (t "Tiempo de espera optimo")
    )
 )
 
@@ -118,7 +118,7 @@
 ;; ESTRATEGIA: Matematica/Composicion (Uso de let y truncate)
 ;; IMPACTO: No destructiva
 ;; ========================================================
-;; Requerimiento 6: Informe de Distribución Temporal
+;; Requerimiento 6: Informe de Distribucion Temporal
 (defun informe-dist-temp ()
   (let ((calculo-rojo (truncate (/ (* 90 100.0) 216)))
         (calculo-amarillo (truncate (/ (* 6 100.0) 216)))

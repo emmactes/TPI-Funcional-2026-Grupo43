@@ -1,6 +1,6 @@
 ;; Iteracion 2. 
 ;; Extension 1
-;; Carga de librerías externas mediante Quicklisp
+;; Carga de libreria externa mediante Quicklisp
 (ql:quickload "local-time")
 ;; ========================================================
 ;; FUNCION: transicion
@@ -30,7 +30,7 @@
 ;; ========================================================
 ;; FUNCION: temporizador
 ;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo átomo)
-;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de let, mod y cond)
+;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de mod y cond)
 ;; IMPACTO: No destructiva
 ;; Requerimiento 2: Temporizador Automatico
 (defun temporizador (epoch)
@@ -93,7 +93,7 @@
 ;; ========================================================
 ;; FUNCION: recomendacion-ciclo
 ;; NATURALEZA: Pura (Retorna una cadena de texto, no genera efectos secundarios)
-;; ESTRATEGIA: Condicional (Evaluación de multiples casos mediante cond)
+;; ESTRATEGIA: Condicional (Evaluacion de multiples casos mediante cond)
 ;; IMPACTO: No destructiva 
 ;; ========================================================
 ;; Requerimiento 4.b: Analisis de Ciclos Semaforicos
@@ -101,7 +101,7 @@
    (cond
       ((< tiempo 35) "Tiempo de espera muy corto, se recomienda extenderlo")
       ((> tiempo 150) "Tiempo de espera muy largo, se recomienda reducirlo")
-      (t "Tiempo de espera óptimo")
+      (t "Tiempo de espera optimo")
    )
 )
 
@@ -146,7 +146,7 @@
                           :direction :output
                           :if-exists :supersede 
                           :if-does-not-exist :create)
-    (format stream "Informe de Ejecución del Sistema Semafórico~%")
+    (format stream "Informe de Ejecucion del Sistema Semaforico~%")
     (format stream "=========================================~%")
     (mapcar #'(lambda (tiempo-unix)
                (let ((fecha-legible (local-time:format-timestring nil 
@@ -158,7 +158,7 @@
                         ((equal (temporizador tiempo-unix) 'rojo) 'verde)
                         ((equal (temporizador tiempo-unix) 'amarillo) 'rojo)
                         ((equal (temporizador tiempo-unix) 'verde) 'amarillo))))
-               (format stream "~a - Transición: ~a -> ~a~%"
+               (format stream "~a - Transicion: ~a -> ~a~%"
                           fecha-legible
                           color-anterior
                           color-actual)))
