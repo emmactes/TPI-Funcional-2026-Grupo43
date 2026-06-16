@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="semaforo.jpg" alt="Semaforo" width="500">
+  <img src="sema1.jpg" alt="Semaforo" width="500">
 </p>
 
 <h1 align="center">🚦 TPI Funcional 2026 - Grupo 43</h1>
