@@ -4,7 +4,7 @@
 ;; ========================================================
 ;; FUNCION: temporizador
 ;; NATURALEZA: Pura (Dado un mismo tiempo, siempre retorna el mismo átomo)
-;; ESTRATEGIA: Matematica y Seleccion Condicional (Uso de let, mod y cond)
+;; ESTRATEGIA: Matematica y Seleccion Condicional (mod y cond)
 ;; IMPACTO: No destructiva
 ;; Requerimiento 2: Temporizador Automatico
 (defun temporizador (epoch)
@@ -39,3 +39,5 @@
     )
   )
 )
+; Ejemplo de uso: (auditoria 1781577600) -> 
+; Tiempo [2026-06-16 02:40:00]: la luz ha cambiado de rojo a verde
