@@ -19,7 +19,7 @@
 ## 👥 Integrantes
 * **Veloso Franco** - [franco05555](https://github.com/franco05555)
 * **Otero Emmanuel** - [emmactes](https://github.com/emmactes)
-* **Gonzalez Federico** - [fede7218](https://github.com/fede7218)
+* **Gonzalez Federico** - [fede7218](https://github.com/fede1728)
 
 ## 🎓 Plantel Docente
 * **Responsable:** Msc. Ricardo Monzón
